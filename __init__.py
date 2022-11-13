@@ -19,7 +19,7 @@ bl_info = {
     "version" : (0, 0, 1),
     "location" : "",
     "warning" : "",
-    "category" : "Generic"
+    "category" : "Interface"
 }
 
 if "bpy" in locals():
@@ -33,8 +33,8 @@ else:
 import bpy
 
 classes = [
-    
-    
+    ot.AFFINITYBRIDGE_OT_Photo,
+    ui.AFFINITYBRIDGE_PT_Panel,
 ]
 
 def register():
