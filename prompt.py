@@ -1,0 +1,1 @@
+promptkey = {"photo": "affinity-photo-2open-file"}
