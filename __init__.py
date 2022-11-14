@@ -14,12 +14,13 @@
 bl_info = {
     "name" : "Affinity_Bridge",
     "author" : "Hattori_Kaoru(t0rry_)",
-    "description" : "",
+    "description" : "BlenderからAffinityPhoto2を起動するや～つ",
     "blender" : (3, 00, 0),
     "version" : (0, 0, 1),
     "location" : "",
     "warning" : "",
-    "category" : "Interface"
+    "support" : "TESTING",
+    "category" : "User"
 }
 
 if "bpy" in locals():
