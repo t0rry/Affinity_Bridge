@@ -11,9 +11,9 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        layout.prop(scene.affinitybridge, "file_name", text="file name") 
-        layout.prop(scene.affinitybridge, "file_format", text="file name") 
-        layout.prop(scene.affinitybridge, "color_mode", text="file name") 
+        layout.prop(scene.affinitybridge, "file_name", text="File Name") 
+        layout.prop(scene.affinitybridge, "file_format", text="Format") 
+        layout.prop(scene.affinitybridge, "color_mode", text="Color Mode") 
                 
         layout.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2')
         
