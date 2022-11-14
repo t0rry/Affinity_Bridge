@@ -31,8 +31,41 @@ else:
     from . import ui
     
 import bpy
+from bpy.props import (
+    BoolProperty,
+    EnumProperty,
+    FloatProperty,
+    IntProperty,
+    PointerProperty,
+    StringProperty
+)
+
+class AffinityBridgeProp(bpy.types.PropertyGroup):
+    file_format:EnumProperty(
+        name = 'file_fromat',
+        description = 'file_format',
+        items = [('PNG','PNG','select PNG(file format)'),
+                ('JPEG','JPEG','select JPEG(file format)'),
+                ('OPEN_EXR','Open_EXR','select OpenEXR(file format)'),
+                ('OPEN_EXR_MULTILAYER','Open EXR Multilayer','select OpenEXR_Multilayer(file format)')]
+    )
+    
+    color_mode:EnumProperty(
+        name = 'color_mode',
+        description ='color mode',
+        items = [('BW', "BW",'select BW(color mode)'),
+                ('RGB','RGB','select RGB(color mode)'),
+                ('RGBA','RGBA','select RGBA(color mode)')]
+    )
+    
+    file_name:StringProperty(
+        name = 'file_name',
+        description = 'use to saved image'
+    )
+    
 
 classes = [
+    AffinityBridgeProp,
     ot.AFFINITYBRIDGE_OT_Photo,
     ui.AFFINITYBRIDGE_PT_Panel,
 ]
@@ -40,7 +73,8 @@ classes = [
 def register():
     for c in classes:
         bpy.utils.register_class(c)
-
+    bpy.types.Scene.affinitybridge = bpy.props.PointerProperty(type = AffinityBridgeProp)
+    
 def unregister():
     for c in classes:
         bpy.utils.unregister_class(c)
