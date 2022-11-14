@@ -2,6 +2,14 @@ import bpy
 import subprocess
 import os
 
+def convert_fileformat(fileformat):
+    
+    file_format = 'EXR' if fileformat == 'OPEN_EXR' else fileformat
+    file_format = 'EXR' if fileformat == 'OPEN_EXR_MULTILAYER' else fileformat
+    
+    return file_format
+    
+
 class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
     """
     image loaded start-up AffinityPhoto2 
@@ -47,17 +55,21 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         #change savedparameter
                         afy_brg = context.scene.affinitybridge
                         img_stg.file_format = afy_brg.file_format
+                        
+                        #convert exr
+                        file_format  = convert_fileformat(img_stg.file_format)
+                        
                         img_stg.color_mode = afy_brg.color_mode
                         file_name_cp = afy_brg.file_name
                         print('レンダリング設定を任意の内容に変更しました')
                         
                         #save
-                        saved_path = save_dir + "\\" + file_name + '.' + img_stg.file_format.lower()
+                        saved_path = save_dir + "\\" + file_name + '.' + file_format.lower()
                         bpy.data.images[file_name].save_render(saved_path,scene = bpy.context.scene)
                         print('画像を保存しましたファイルパスは以下の通りです')
                         
                         #情報の上書き
-                        file_path = save_dir + "\\" + file_name + "." + img_stg.file_format
+                        file_path = save_dir + "\\" + file_name + "." + file_format.lower()
                         print(file_path)
                         #load
                         bpy.ops.image.open(filepath = file_path)
@@ -88,31 +100,3 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                 
         
         return {'FINISHED'}
-    
-    
-    
-    #memo
-# for area in bpy.context.screen.areas:
-#     if area.type =='IMAGE_EDITOR':
-#         print(area.spaces.active.image.name)
-
-# for area in bpy.context.screen.areas:
-#     if area.type =='IMAGE_EDITOR':
-#         file_name =area.spaces.active.image.name
-#         print(file_name)
-#         test = area.spaces.active.image.is_dirty
-#         print(test)
-#         file_path = bpy.data.images[file_name].filepath
-#         print(file_path)
-        
-        
-# for area in bpy.context.screen.areas:
-#     if area.type =='IMAGE_EDITOR':
-#         file_name =area.spaces.active.image.name
-#         test = area.spaces.active.image.is_dirty
-#         file_path = bpy.data.images[file_name].filepath
-#         print(file_path)
-#         if file_path == '':
-#             print('None')
-#         else:
-#             print('else')
