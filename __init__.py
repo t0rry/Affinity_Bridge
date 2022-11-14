@@ -78,4 +78,5 @@ def register():
 def unregister():
     for c in classes:
         bpy.utils.unregister_class(c)
+    del bpy.types.Scene.affinitybridge
 
