@@ -79,8 +79,10 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         img_stg.file_format = old_ff
                         img_stg.color_mode = old_cc
                         
+                        self.report({'INFO'},'Success!:'+ file_path) 
+                        
                     else:
-                        pass
+                        self.report({'INFO'},'Success!:Start AffinityPhoto2 Enjoy<3') 
                                         
                     if n ==1:
                         #make start-up AffinityPhoto2 path
