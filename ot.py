@@ -33,18 +33,40 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         save_dir = bl_path + "\AffinityBridge"
                         if not os.path.exists(save_dir):
                             os.makedirs(save_dir)
+                            
+                            print('保存先フォルダが存在しないためフォルダを作成しました')
+                            print(save_dir)
+                            
+                        #backup saved parameter    
+                        img_stg =bpy.context.scene.render.image_settings
+                        old_ff = img_stg.file_format
+                        old_cc = img_stg.color_mode
+                        
+                        print('現在使用しているレンダリング設定をバックアップしました')
+                        
+                        #change savedparameter
+                        afy_brg = context.scene.affinitybridge
+                        img_stg.file_format = afy_brg.file_format
+                        img_stg.color_mode = afy_brg.color_mode
+                        file_name_cp = afy_brg.file_name
+                        print('レンダリング設定を任意の内容に変更しました')
+                        
                         #save
-                        bpy.data.images[file_name].save_render(save_dir + "\\" + file_name) 
+                        saved_path = save_dir + "\\" + file_name + '.' + img_stg.file_format.lower()
+                        bpy.data.images[file_name].save_render(saved_path,scene = bpy.context.scene)
+                        print('画像を保存しましたファイルパスは以下の通りです')
                         
                         #情報の上書き
-                        file_path = save_dir + "\\" + file_name
-                        
+                        file_path = save_dir + "\\" + file_name + "." + img_stg.file_format
+                        print(file_path)
                         #load
+                        bpy.ops.image.open(filepath = file_path)
+                        print('画像を再ロードしました')
                         
-                        #rename
+                        #Undo image saved parameter
+                        img_stg.file_format = old_ff
+                        img_stg.color_mode = old_cc
                         
-                        print(file_path)     
-                    
                     else:
                         pass
                                         
@@ -74,23 +96,23 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
 #     if area.type =='IMAGE_EDITOR':
 #         print(area.spaces.active.image.name)
 
-for area in bpy.context.screen.areas:
-    if area.type =='IMAGE_EDITOR':
-        file_name =area.spaces.active.image.name
-        print(file_name)
-        test = area.spaces.active.image.is_dirty
-        print(test)
-        file_path = bpy.data.images[file_name].filepath
-        print(file_path)
+# for area in bpy.context.screen.areas:
+#     if area.type =='IMAGE_EDITOR':
+#         file_name =area.spaces.active.image.name
+#         print(file_name)
+#         test = area.spaces.active.image.is_dirty
+#         print(test)
+#         file_path = bpy.data.images[file_name].filepath
+#         print(file_path)
         
         
-for area in bpy.context.screen.areas:
-    if area.type =='IMAGE_EDITOR':
-        file_name =area.spaces.active.image.name
-        test = area.spaces.active.image.is_dirty
-        file_path = bpy.data.images[file_name].filepath
-        print(file_path)
-        if file_path == '':
-            print('None')
-        else:
-            print('else')
+# for area in bpy.context.screen.areas:
+#     if area.type =='IMAGE_EDITOR':
+#         file_name =area.spaces.active.image.name
+#         test = area.spaces.active.image.is_dirty
+#         file_path = bpy.data.images[file_name].filepath
+#         print(file_path)
+#         if file_path == '':
+#             print('None')
+#         else:
+#             print('else')

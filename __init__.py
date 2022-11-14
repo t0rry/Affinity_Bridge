@@ -63,6 +63,18 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         description = 'use to saved image'
     )
     
+    #maybe dont use old_ff,old_cm
+    
+    old_ff:StringProperty(
+        name = 'old file_format',
+        description = 'to changing parameter when saved image'
+    )
+    
+    old_cm:StringProperty(
+        name = 'old color_mode',
+        description = 'to changing parameter when saved image'        
+    )
+    
 
 classes = [
     AffinityBridgeProp,
