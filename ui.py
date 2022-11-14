@@ -23,7 +23,8 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
         
         layout.separator()
         col = layout.column(align=True)
-        col.prop(scene.affinitybridge, 'change_name',text = 'used orignal name')
+        col.label(text = 'Only Render Result,Viewer Node',icon = 'ERROR')
+        col.prop(scene.affinitybridge, 'is_change_name',text = 'used orignal name')
         col.prop(scene.affinitybridge, 'file_name', text='File Name')         
         
         layout.separator()
@@ -31,6 +32,9 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
         col.scale_x = 3
         col.scale_y = 3
         col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
+        layout.separator()
+        col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT')
+        
         
 class AFFINITYBRIDGE_PT_InformationPanel(bpy.types.Panel):
     bl_idname = "AFFINITY_BRIDGE.PT_InformationPanel"

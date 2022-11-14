@@ -8,6 +8,18 @@ def convert_fileformat(fileformat):
     file_format = 'EXR' if fileformat == 'OPEN_EXR_MULTILAYER' else fileformat
     
     return file_format
+
+class AFFINITYBRIDGE_OT_Reload(bpy.types.Operator):
+    """
+    image reloaded image
+    """    
+    bl_idname = "affinity_bridge.reload_affinity_photo"
+    bl_label = "atart-up to affinity photo"
+    
+    def execute(self,countext):
+        bpy.ops.image.reload()
+        self.report({'INFO'},'Success!:Reload image!') 
+        return {'FINISHED'}
     
 class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
     """
@@ -57,16 +69,22 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         file_format = convert_fileformat(img_stg.file_format)
                         
                         img_stg.color_mode = afy_brg.color_mode
-                        file_name_cp = afy_brg.file_name
                         print('レンダリング設定を任意の内容に変更しました')
                         
                         #save
-                        saved_path = save_dir + "\\" + file_name + '.' + file_format.lower()
+                        if context.scene.affinitybridge.is_change_name == True:
+                            file_name_change = afy_brg.file_name
+                            saved_path = save_dir + "\\" + file_name_change + '.' + file_format.lower()                            
+                            
+                        else:
+                            file_name_change = file_name
+                            saved_path = save_dir + "\\" + file_name_change + '.' + file_format.lower()
+
                         bpy.data.images[file_name].save_render(saved_path,scene = bpy.context.scene)
                         print('画像を保存しましたファイルパスは以下の通りです')
                         
                         #情報の上書き
-                        file_path = save_dir + "\\" + file_name + "." + file_format.lower()
+                        file_path = save_dir + "\\" + file_name_change + "." + file_format.lower()
                         print(file_path)
                         
                         context.scene.affinitybridge.path_str = file_path
@@ -101,6 +119,4 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                 except AttributeError:
                     self.report({'ERROR'},'未実装:何も画像が選択されていません') 
                 
-                
-        
         return {'FINISHED'}
