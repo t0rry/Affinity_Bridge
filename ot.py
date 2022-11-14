@@ -9,7 +9,6 @@ def convert_fileformat(fileformat):
     
     return file_format
     
-
 class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
     """
     image loaded start-up AffinityPhoto2 
@@ -19,14 +18,13 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
 
     def execute(self,context):
         #Can only be used when there is only one IMAGE_EDITOR on the screen
+        
         n = 0
         file_name = ''
 
-        
         for area in bpy.context.screen.areas:
             if area.type =='IMAGE_EDITOR':
                 n = n + 1
-                
                 #画像パスの生成
                 #画面上の画像エディタ状で画像を開いているか
                 try:
@@ -49,7 +47,6 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         img_stg =bpy.context.scene.render.image_settings
                         old_ff = img_stg.file_format
                         old_cc = img_stg.color_mode
-                        
                         print('現在使用しているレンダリング設定をバックアップしました')
                         
                         #change savedparameter
@@ -57,7 +54,7 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         img_stg.file_format = afy_brg.file_format
                         
                         #convert exr
-                        file_format  = convert_fileformat(img_stg.file_format)
+                        file_format = convert_fileformat(img_stg.file_format)
                         
                         img_stg.color_mode = afy_brg.color_mode
                         file_name_cp = afy_brg.file_name
@@ -71,6 +68,9 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         #情報の上書き
                         file_path = save_dir + "\\" + file_name + "." + file_format.lower()
                         print(file_path)
+                        
+                        context.scene.affinitybridge.path_str = file_path
+                        
                         #load
                         bpy.ops.image.open(filepath = file_path)
                         print('画像を再ロードしました')
@@ -90,14 +90,16 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                         ap2_path = '\AppData\Local\Microsoft\WindowsApps\AffinityPhoto2.exe'
                         affinity_photo2_path = users_path + ap2_path
                         
+                        context.scene.affinitybridge.path_str = file_path
+                        
                         #start-up AffinityPhoto2
                         subprocess.Popen([ affinity_photo2_path, file_path ],shell = True)
                         
                     else:
-                        self.report({'INFO'},'ERROR:画面上にIMAGE_EDITORが複数存在しています')
+                        self.report({'ERROR'},'ERROR:画面上にIMAGE_EDITORが複数存在しています')
     
                 except AttributeError:
-                    self.report({'INFO'},'未実装:何も画像が選択されていません') 
+                    self.report({'ERROR'},'未実装:何も画像が選択されていません') 
                 
                 
         

@@ -63,6 +63,19 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         description = 'use to saved image'
     )
     
+    path_str:StringProperty(
+        name = 'path_string',
+        description = 'display of saved image path',
+        default = ''
+    )    
+    
+    change_name:BoolProperty(
+        name = 'change_name',
+        description = 'use to input orignal name',
+        default = False
+    )
+    
+
     #maybe dont use old_ff,old_cm
     
     old_ff:StringProperty(
@@ -80,6 +93,7 @@ classes = [
     AffinityBridgeProp,
     ot.AFFINITYBRIDGE_OT_Photo,
     ui.AFFINITYBRIDGE_PT_Panel,
+    ui.AFFINITYBRIDGE_PT_InformationPanel
 ]
 
 def register():
