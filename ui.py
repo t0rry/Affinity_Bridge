@@ -131,6 +131,7 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
                 col = layout.column(align=True) 
                 
                 #eevee
+                view_layer = context.view_layer    
                 view_layer_eevee = view_layer.eevee
                 
                 col = layout.column(heading="Diffuse", align=True)
