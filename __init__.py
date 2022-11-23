@@ -96,6 +96,7 @@ classes = [
     ot.AFFINITYBRIDGE_OT_Photo,
     ot.AFFINITYBRIDGE_OT_Reload,
     ui.AFFINITYBRIDGE_PT_Panel,
+    ui.AFFINITYBRIDGE_PT_RenderSettingPanel,
     ui.AFFINITYBRIDGE_PT_InformationPanel
 ]
 
