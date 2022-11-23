@@ -60,8 +60,7 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
             rd = context.scene.render
             layout.prop(rd,'engine',text = 'Render Engine')
 
-            box = layout.box()
-                
+            box = layout.box()                
             
             if context.scene.render.engine == 'CYCLES':
                 #cycles
@@ -120,7 +119,6 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
                 if context.engine == 'BLENDER_EEVEE':
                     col.prop(view_layer, "use_pass_cryptomatte_accurate",
                             text="Accurate Mode")
-
                 
             elif context.scene.render.engine == 'BLENDER_EEVEE':
                 
@@ -171,11 +169,7 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
                 
             else:
                 box = layout.box()
-                box.label(text= 'ERROR:Not applicable',icon = 'ERROR')
-                
-                
-            
-
+                box.label(text= 'ERROR:Not applicable',icon = 'ERROR')                
             
 class AFFINITYBRIDGE_PT_InformationPanel(bpy.types.Panel):
     bl_idname = "AFFINITY_BRIDGE.PT_InformationPanel"
