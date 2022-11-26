@@ -57,69 +57,75 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
 
         is_exist_filepath = True
         #ファイルパスが存在するときはTrue、存在しないときはFalse
-        
+    
         try:
             #ファイルパス取得
             file_path = context.space_data.image.filepath_from_user(image_user=None)
             file_name = context.space_data.image.name
-        except:
-            is_exist_filepath = False
-            bl_path = os.path.dirname(bpy.data.filepath)
-            save_dir = bl_path + "\AffinityBridge"
             
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
-                self.report({'INFO'},'フォルダを作成しました'+ save_dir) 
-        
+        except:
+            #例外処理
+            self.report({'ERROR'},'有効な画像が選択されていません') 
+            
         else:
-            is_exist_filepath = True
-            print('開発用:パスが存在しています')
-            save_dir = file_path
-                    
-        #レンダリング設定を一時保存する
-        old_rebder_setting = save_render_setting()
-
-        print('開発用：現在使用しているレンダリング設定をバックアップしました')
-        
-        #レンダリング設定を上書する
-        #file_mode,color_mode
-        afy_brg = context.scene.affinitybridge
-        context.scene.render.image_settings.file_format = afy_brg.file_format
-        context.scene.render.image_settings.color_mode = afy_brg.color_mode
-        
-        #convert exr
-        file_format = convert_fileformat(context.scene.render.image_settings.file_format)
-
-        print('レンダリング設定を任意の内容に変更しました')
-        
-        #save
-        if is_exist_filepath == False:
-                    
-            if context.scene.affinitybridge.is_change_name == True:
-                file_name_change = afy_brg.file_name
-                saved_path = save_dir + "\\" + file_name_change + '.' + file_format.lower()                            
+            #ファイルパスが存在しないとき
+            if file_path == '':
+                is_exist_filepath = False
+                bl_path = os.path.dirname(bpy.data.filepath)
+                save_dir = bl_path + "\AffinityBridge"
+            
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
+                    self.report({'INFO'},'フォルダを作成しました'+ save_dir) 
                 
             else:
-                file_name_change = file_name
-                saved_path = save_dir + "\\" + '.' + file_format.lower()
-        else:
-            saved_path = file_path
+                is_exist_filepath = True
+                print('開発用:パスが存在しています')
+                save_dir = file_path
+                    
+            #レンダリング設定を一時保存する
+            old_rebder_setting = save_render_setting()
+            print('開発用：現在使用しているレンダリング設定をバックアップしました')
+            
+            #レンダリング設定を上書する
+            #file_mode,color_mode
+            afy_brg = context.scene.affinitybridge
+            context.scene.render.image_settings.file_format = afy_brg.file_format
+            context.scene.render.image_settings.color_mode = afy_brg.color_mode
+            
+            #convert exr
+            file_format = convert_fileformat(context.scene.render.image_settings.file_format)
 
-        bpy.data.images[file_name].save_render(saved_path,scene = bpy.context.scene)
-        print('開発用：画像を保存しましたファイルパスは以下の通りです')
+            print('レンダリング設定を任意の内容に変更しました')
+            
+            #save
+            if is_exist_filepath == False:
+                        
+                if context.scene.affinitybridge.is_change_name == True:
+                    file_name_change = afy_brg.file_name
+                    saved_path = save_dir + "\\" + file_name_change + '.' + file_format.lower()                            
+                    
+                else:
+                    file_name_change = file_name
+                    saved_path = save_dir + "\\" + file_name_change  + '.' + file_format.lower()
+                    
+                    bpy.data.images[file_name].save_render(saved_path,scene = bpy.context.scene)
+                    print('開発用：画像を保存しましたファイルパスは以下の通りです')
+                    #load
+                    bpy.ops.image.open(filepath = saved_path)
+                    print('開発用:画像を再ロードしました')
+                    
+            else:
+                saved_path = file_path
+                
+            open_affinity_photo(saved_path)
         
-        #load
-        bpy.ops.image.open(filepath = file_path)
-        print('開発用:画像を再ロードしました')
-        
-        file_path = open_affinity_photo(file_path)
-    
-        #UIにファイルパスを表示する
-        context.scene.affinitybridge.path_str = file_path
-        
-        #レンダリング設定を元に戻す
-        undo_render_setting(old_rebder_setting)
-        
-        self.report({'INFO'},'Success!:'+ file_path) 
+            #UIにファイルパスを表示する
+            context.scene.affinitybridge.path_str = saved_path
+            
+            #レンダリング設定を元に戻す
+            undo_render_setting(old_rebder_setting)
+            
+            self.report({'INFO'},'Success!:'+ saved_path) 
     
         return {'FINISHED'}
