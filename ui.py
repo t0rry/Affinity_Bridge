@@ -11,28 +11,54 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        col = layout.column(align=True)
-        
-        col.scale_x = 1
-        col.scale_y = 1
-        
-        col.prop(scene.affinitybridge, "file_format", text="Format") 
-        col.prop(scene.affinitybridge, "color_mode", text="Color Mode") 
-        
-        layout.separator()
-        col = layout.column(align=True)
-        col.label(text = 'Only [Render Result],[Viewer Node]',icon = 'ERROR')
-        col.prop(scene.affinitybridge, 'is_change_name',text = 'used orignal name')
-        col.prop(scene.affinitybridge, 'file_name', text='File Name')         
-        
-        layout.separator()
-        col = layout.column(align=True)
-        col.scale_x = 3
-        col.scale_y = 3
-        col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
-        col.separator(factor = 1)
-        col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT')
-        
+
+        try:
+            if context.space_data.image.filepath_from_user(image_user=None) == '':
+                box = layout.box()
+                box.label(text= 'Render Setting',icon = 'RENDER_STILL')
+                
+                col = layout.column(align=True)
+                col.prop(scene.affinitybridge, "file_format", text="Format") 
+                col.prop(scene.affinitybridge, "color_mode", text="Color Mode")   
+                
+                layout.separator()
+                
+                box = layout.box()
+                box.label(text= 'Image Rename',icon = 'FILE_TEXT')
+                
+                col = layout.column(align=True)
+                col.prop(scene.affinitybridge, 'is_change_name',text = 'used orignal name')
+                col.prop(scene.affinitybridge, 'file_name', text='File Name')
+                
+                box = layout.box()
+                box.label(text= 'AffinityBridge',icon = 'SEQUENCE_COLOR_04')
+                
+                layout.separator()
+                col = layout.column(align=True)
+                col.scale_x = 3
+                col.scale_y = 3
+                col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
+                col.separator(factor = 1)
+                
+                
+                col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT')  
+
+            else:
+                box = layout.box()
+                box.label(text= 'AffinityBridge',icon = 'SEQUENCE_COLOR_04')
+                
+                layout.separator()
+                col = layout.column(align=True)
+                col.scale_x = 3
+                col.scale_y = 3
+                col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
+                col.separator(factor = 1)
+                col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT')  
+            
+        except:
+            col.label(text= '有効な画像を開いてください',icon = 'ERROR')
+            
+
 
 def make_ui_alltype(self,context):
         layout = self.layout
