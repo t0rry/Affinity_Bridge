@@ -87,11 +87,17 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
             old_rebder_setting = save_render_setting()
             print('開発用：現在使用しているレンダリング設定をバックアップしました')
             
-            #レンダリング設定を上書する
-            #file_mode,color_mode
-            afy_brg = context.scene.affinitybridge
-            context.scene.render.image_settings.file_format = afy_brg.file_format
-            context.scene.render.image_settings.color_mode = afy_brg.color_mode
+            #ファイルパスが存在しないデータのみ使用
+            if is_exist_filepath == False:
+                #レンダリング設定を上書する
+                #file_mode,color_mode
+                afy_brg = context.scene.affinitybridge
+                context.scene.render.image_settings.file_format = afy_brg.file_format
+                context.scene.render.image_settings.color_mode = afy_brg.color_mode
+                print('開発用：ファイルパスが存在しないためレンダリング設定を上書しています')
+                
+            else:
+                print('開発用：ファイルパスが存在するためレンダリング設定を上書していません')
             
             #convert exr
             file_format = convert_fileformat(context.scene.render.image_settings.file_format)
@@ -107,7 +113,7 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                     
                 else:
                     file_name_change = file_name
-                    saved_path = save_dir + "\\" + file_name_change  + '.' + file_format.lower()
+                    saved_path = save_dir + "\\" + file_name_change +'.' + file_format.lower()
                     
                     bpy.data.images[file_name].save_render(saved_path,scene = bpy.context.scene)
                     print('開発用：画像を保存しましたファイルパスは以下の通りです')
