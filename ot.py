@@ -40,16 +40,19 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         eevee_pathes = ["diffuse_direct","diffuse_color",
                         "glossy_direct","glossy_color",
                         "emit","enviroment","shadow","ambient_occlussion"]
-        #辞書データの初期化
+        #リスト、辞書データの初期化
+        bool_list = []
         pathes_dict = {}
         if scene.render.engine == "CYCLES":
             pathes_list.extend(cycles_pathes)
+            
+            #bool判定取得
             for pathname in pathes_list:
-                print(pathname)
-                #bool 判定
+                api_string = eval(f"bpy.context.view_layer.use_pass_{pathname}")
                 #辞書データ　item:bool
-                pass
-        
+                bool_list.append(api_string)
+            #辞書データ作成
+            pathes_dict = dict(zip(pathes_list,bool_list))
         else:
             pass
                 #EEVEE
@@ -62,8 +65,9 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
             pass
         else:
             pass
-        return pathes_list
-    #レンダラーによって処理をわける
+        
+        
+        return pathes_dict
     
     def execute(self,context):
         #アウトプットノードを追加
@@ -79,7 +83,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         
         #AffinityBridgeから出力パス情報を取得
         render_pass_count  = self.render_pass_count()
-        print(render_pass_count)
+        #print(render_pass_count)
         return{'FINISHED'}
 
 
