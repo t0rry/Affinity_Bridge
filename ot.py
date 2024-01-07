@@ -20,7 +20,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         
         #全体共通パス
         common_pathes = ["z","mist","position","normal"]
-        pathes_list.append(common_pathes)
+        pathes_list.extend(common_pathes)
         
         if view_layer.use_pass_z == True:
             count += 1
@@ -36,13 +36,33 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
                         "diffuse_direct","diffuse_indirect","diffuse_color",
                         "glossy_direct","glossy_indirect","glossy_color",
                         "transmission_direct","transmission_indirect","transmission_color"]
+        #eevee
+        eevee_pathes = ["diffuse_direct","diffuse_color",
+                        "glossy_direct","glossy_color",
+                        "emit","enviroment","shadow","ambient_occlussion"]
+        #辞書データの初期化
+        pathes_dict = {}
         if scene.render.engine == "CYCLES":
-            pass
-        #EEVEE
+            pathes_list.extend(cycles_pathes)
+            for pathname in pathes_list:
+                print(pathname)
+                #bool 判定
+                #辞書データ　item:bool
+                pass
+        
         else:
             pass
-        
-        return count    
+                #EEVEE
+        if scene.render.engine == "BLENDER_EEVEE":
+            pathes_list.extend(eevee_pathes)
+            #bool判定
+            #._{itemname}
+            #辞書データ　item:bool
+            #ボリュームライトだけ例外処理すること
+            pass
+        else:
+            pass
+        return pathes_list
     #レンダラーによって処理をわける
     
     def execute(self,context):
@@ -57,7 +77,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         #アウトプットノードの設定（ファイル設定）
         output_node.format.file_format = "OPEN_EXR_MULTILAYER"
         
-        #AffinityBridgeから出力パスを取得
+        #AffinityBridgeから出力パス情報を取得
         render_pass_count  = self.render_pass_count()
         print(render_pass_count)
         return{'FINISHED'}
