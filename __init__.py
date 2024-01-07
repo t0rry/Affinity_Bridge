@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Hattori_Kaoru( t0rry_ )",
     "description" : "BlenderからAffinityPhoto2を起動します",
     "blender" : (4, 0, 0),
-    "version" : (0, 6, 0),
+    "version" : (0, 5, 1),
     "location" : "Image Editor >> Property Panel",
     "warning" : "This vertions experiment",
     "support" : "COMMUNITY",
