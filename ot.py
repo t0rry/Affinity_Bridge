@@ -15,10 +15,15 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
         output_node = bpy.context.scene.node_tree.nodes.active
         #アウトプットノードの設定(ID、ビジュアル)
-        output_node.name = "export_openexr"
+        output_node.name = "export_openexr_AB"
         output_node.label = "Export_OpenEXR(MultiLayer)"
         output_node.use_custom_color = True
         output_node.color = (0.6,0.3,0.5)
+        #アウトプットノードの設定（ファイル設定）
+        output_node.format.file_format = "OPEN_EXR_MULTILAYER"
+        
+        #AffinityBridgeから出力パスを取得
+        
         return{'FINISHED'}
 
 
