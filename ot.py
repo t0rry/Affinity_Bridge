@@ -39,11 +39,12 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         #eevee
         eevee_pathes = ["diffuse_direct","diffuse_color",
                         "glossy_direct","glossy_color",
-                        "emit","enviroment","shadow","ambient_occlussion"]
+                        "emit","environment","shadow","ambient_occlusion"]
         #リスト、辞書データの初期化
         bool_list = []
         pathes_dict = {}
         if scene.render.engine == "CYCLES":
+            #cycles要素を全体共通パスに合成
             pathes_list.extend(cycles_pathes)
             
             #bool判定取得
@@ -57,16 +58,21 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
             pass
                 #EEVEE
         if scene.render.engine == "BLENDER_EEVEE":
+            #EEVEE要素を全体共通パスに合成
             pathes_list.extend(eevee_pathes)
+            
             #bool判定
-            #._{itemname}
-            #辞書データ　item:bool
-            #ボリュームライトだけ例外処理すること
-            pass
+            for pathname in pathes_list:
+                api_string = eval(f"bpy.context.view_layer.use_pass_{pathname}")
+                #辞書データ　item:bool
+                bool_list.append(api_string)            
+            #辞書データ作成
+            pathes_dict = dict(zip(pathes_list,bool_list))            
+            #ボリュームライトだけ例外処理すること（後回し）
         else:
             pass
         
-        
+        #通常画像分の合成を忘れずに（True +1）
         return pathes_dict
     
     def execute(self,context):
@@ -83,7 +89,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         
         #AffinityBridgeから出力パス情報を取得
         render_pass_count  = self.render_pass_count()
-        #print(render_pass_count)
+        print(render_pass_count)
         return{'FINISHED'}
 
 
