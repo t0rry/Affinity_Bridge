@@ -2,7 +2,7 @@ import bpy
 import os
 
 class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
-    bl_idname = "AFFINITY_BRIDGE.PT_Panel"
+    bl_idname = "AFFINITY_BRIDGE_PT_Panel"
     bl_label = "Bridge AffinityPhoto"
     bl_space_type = "IMAGE_EDITOR"
     bl_region_type = "UI"
@@ -74,7 +74,7 @@ def make_ui_alltype(self,context):
         col.prop(view_layer, "use_pass_normal")   
             
 class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
-    bl_idname = "AFFINITY_BRIDGE.PT_RenderSettingPanel"
+    bl_idname = "AFFINITY_BRIDGE_PT_RenderSettingPanel"
     bl_label = "Bridge AffinityPhoto RenderSettings"
     bl_space_type = "IMAGE_EDITOR"
     bl_region_type = "UI"
@@ -198,7 +198,7 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
                 box.label(text= 'ERROR:Not applicable',icon = 'ERROR')                
             
 class AFFINITYBRIDGE_PT_InformationPanel(bpy.types.Panel):
-    bl_idname = "AFFINITY_BRIDGE.PT_InformationPanel"
+    bl_idname = "AFFINITY_BRIDGE_PT_InformationPanel"
     bl_label = "Bridge AffinityPhoto Information"
     bl_space_type = "IMAGE_EDITOR"
     bl_region_type = "UI"
