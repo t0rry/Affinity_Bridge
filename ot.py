@@ -2,6 +2,7 @@ import bpy
 import subprocess
 import os
 
+
 class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
     """
     set open exr
@@ -9,6 +10,40 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
     
     bl_idname = "affinity_bridge.setopenexr"
     bl_label = "set open exr"
+    
+    def render_pass_count(self):
+        view_layer = bpy.context.view_layer
+        scene = bpy.context.scene 
+        #RAWを接続するため初期値は１
+        pathes_list = []
+        count = 1
+        
+        #全体共通パス
+        common_pathes = ["z","mist","position","normal"]
+        pathes_list.append(common_pathes)
+        
+        if view_layer.use_pass_z == True:
+            count += 1
+        elif view_layer.use_pass_mist == True:
+            count += 1
+        elif view_layer.use_pass_position == True:
+            count += 1
+        elif view_layer.use_pass_normal == True:
+            count += 1
+        
+        #cycles
+        cycles_pathes = ["vector","uv",
+                        "diffuse_direct","diffuse_indirect","diffuse_color",
+                        "glossy_direct","glossy_indirect","glossy_color",
+                        "transmission_direct","transmission_indirect","transmission_color"]
+        if scene.render.engine == "CYCLES":
+            pass
+        #EEVEE
+        else:
+            pass
+        
+        return count    
+    #レンダラーによって処理をわける
     
     def execute(self,context):
         #アウトプットノードを追加
@@ -23,7 +58,8 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         output_node.format.file_format = "OPEN_EXR_MULTILAYER"
         
         #AffinityBridgeから出力パスを取得
-        
+        render_pass_count  = self.render_pass_count()
+        print(render_pass_count)
         return{'FINISHED'}
 
 

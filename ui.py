@@ -56,6 +56,7 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
                 col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT')  
             
         except:
+            col = layout.column(align=True)
             col.label(text= '有効な画像を開いてください',icon = 'ERROR')
             
 
@@ -117,10 +118,6 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
                 col.prop(view_layer, "use_pass_transmission_direct", text="Direct")
                 col.prop(view_layer, "use_pass_transmission_indirect", text="Indirect")
                 col.prop(view_layer, "use_pass_transmission_color", text="Color")
-
-                col = layout.column(heading="Volume", align=True)
-                col.prop(cycles_view_layer, "use_pass_volume_direct", text="Direct")
-                col.prop(cycles_view_layer, "use_pass_volume_indirect", text="Indirect")
 
                 col = layout.column(heading="Other", align=True)
                 col.prop(view_layer, "use_pass_emit", text="Emission")
