@@ -15,11 +15,11 @@ bl_info = {
     "name" : "Affinity_Bridge",
     "author" : "Hattori_Kaoru( t0rry_ )",
     "description" : "BlenderからAffinityPhoto2を起動します",
-    "blender" : (3, 0, 0),
+    "blender" : (4, 0, 0),
     "version" : (0, 5, 0),
     "location" : "Image Editor >> Property Panel",
     "warning" : "This vertions experiment",
-    "support" : "TESTING",
+    "support" : "COMMUNITY",
     "category" : "User",
     "doc_url" : "https://github.com/t0rry/Affinity_Bridge"
 }
