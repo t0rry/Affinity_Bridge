@@ -11,7 +11,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
     bl_idname = "affinity_bridge.setopenexr"
     bl_label = "set open exr"
     
-    def render_pass_count(self):
+    def get_render_pass_dict(self):
         view_layer = bpy.context.view_layer
         scene = bpy.context.scene 
         #RAWを接続するため初期値は１
@@ -75,6 +75,22 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         #通常画像分の合成を忘れずに（True +1）
         return pathes_dict
     
+    def setting_export_node(self,pathdata_dict):
+        node_context = bpy.context.selected_nodes
+        print(node_context)
+        #bool判定,Trueの数だけadd socket
+        active_paths = []
+        for item,path_bool in pathdata_dict.items():
+            if path_bool == True:
+                active_paths.append(item)
+        
+        #ソケットの数を追加
+        #ソケットの名称は読み取り専用のため断念
+        for i in active_paths:
+            bpy.ops.node.output_file_add_socket()
+            
+        return True
+    
     def execute(self,context):
         #アウトプットノードを追加
         bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
@@ -87,9 +103,12 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         #アウトプットノードの設定（ファイル設定）
         output_node.format.file_format = "OPEN_EXR_MULTILAYER"
         
-        #AffinityBridgeから出力パス情報を取得
-        render_pass_count  = self.render_pass_count()
-        print(render_pass_count)
+        #ビューレイヤーから出力パス情報を取得
+        pathdata_dict  = self.get_render_pass_dict()
+        print(pathdata_dict)
+        
+        #パス情報をノードに適用
+        self.setting_export_node(pathdata_dict)
         return{'FINISHED'}
 
 
