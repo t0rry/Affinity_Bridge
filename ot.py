@@ -2,6 +2,26 @@ import bpy
 import subprocess
 import os
 
+class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
+    """
+    set open exr
+    """
+    
+    bl_idname = "affinity_bridge.setopenexr"
+    bl_label = "set open exr"
+    
+    def execute(self,context):
+        #アウトプットノードを追加
+        bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
+        output_node = bpy.context.scene.node_tree.nodes.active
+        #アウトプットノードの設定(ID、ビジュアル)
+        output_node.name = "export_openexr"
+        output_node.label = "Export_OpenEXR(MultiLayer)"
+        output_node.use_custom_color = True
+        output_node.color = (0.6,0.3,0.5)
+        return{'FINISHED'}
+
+
 def convert_fileformat(fileformat):
     
     file_format = 'EXR' if fileformat == 'OPEN_EXR' else fileformat
@@ -32,7 +52,7 @@ def open_affinity_photo(file_path):
     subprocess.Popen([ affinity_photo2_path, file_path ],shell = True)
     
     return affinity_photo2_path
-
+    
 class AFFINITYBRIDGE_OT_Reload(bpy.types.Operator):
     """
     image reloaded image
