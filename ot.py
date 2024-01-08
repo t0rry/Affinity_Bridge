@@ -11,6 +11,27 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
     bl_idname = "affinity_bridge.setopenexr"
     bl_label = "set open exr"
     
+    def add_output_node(self):
+        #重複確認
+        try:
+            bpy.data.scenes['Scene'].node_tree.nodes['export_openexr_AB']
+        except KeyError:
+            pass
+        else:
+            #ノード削除
+            node = bpy.data.scenes['Scene'].node_tree.nodes['export_openexr_AB']
+            bpy.data.scenes['Scene'].node_tree.nodes.remove(node)
+        finally:
+            bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
+            output_node = bpy.context.scene.node_tree.nodes.active
+            #アウトプットノードの設定(ID、ビジュアル)
+            output_node.name = "export_openexr_AB"
+            output_node.label = "Export_OpenEXR(MultiLayer)"
+            output_node.use_custom_color = True
+            output_node.color = (0.6,0.3,0.5)
+            #アウトプットノードの設定（ファイル設定）
+            output_node.format.file_format = "OPEN_EXR_MULTILAYER"        
+    
     def get_render_pass_dict(self):
         view_layer = bpy.context.view_layer
         scene = bpy.context.scene 
@@ -88,16 +109,8 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         pass
     
     def execute(self,context):
-        #アウトプットノードを追加
-        bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
-        output_node = bpy.context.scene.node_tree.nodes.active
-        #アウトプットノードの設定(ID、ビジュアル)
-        output_node.name = "export_openexr_AB"
-        output_node.label = "Export_OpenEXR(MultiLayer)"
-        output_node.use_custom_color = True
-        output_node.color = (0.6,0.3,0.5)
-        #アウトプットノードの設定（ファイル設定）
-        output_node.format.file_format = "OPEN_EXR_MULTILAYER"
+        #アウトプットノードを追加・設定        
+        self.add_output_node()
         
         #ビューレイヤーから出力パス情報を取得
         pathdata_dict  = self.get_render_pass_dict()
