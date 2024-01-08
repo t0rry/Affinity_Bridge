@@ -14,13 +14,14 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
     def add_output_node(self):
         #重複確認
         try:
-            bpy.data.scenes['Scene'].node_tree.nodes['export_openexr_AB']
+            scene = bpy.context.scene
+            scene.node_tree.nodes['export_openexr_AB']
         except KeyError:
             pass
         else:
             #ノード削除
-            node = bpy.data.scenes['Scene'].node_tree.nodes['export_openexr_AB']
-            bpy.data.scenes['Scene'].node_tree.nodes.remove(node)
+            node = scene.node_tree.nodes['export_openexr_AB']
+            scene.node_tree.nodes.remove(node)
         finally:
             bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
             output_node = bpy.context.scene.node_tree.nodes.active
@@ -106,7 +107,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         return active_paths
     
     def conecting_nodes(self,pathdata_dict):
-        pass
+        pass 
     
     def execute(self,context):
         #アウトプットノードを追加・設定        
