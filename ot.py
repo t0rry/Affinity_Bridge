@@ -5,7 +5,7 @@ import os
 
 class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
     """
-    set open exr
+    OpenExr(MultiLayer)で出力する設定を自動化
     """
     
     bl_idname = "affinity_bridge.setopenexr"
@@ -66,13 +66,19 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
     
     def setting_export_node(self,pathdata_dict):
         #bool判定,Trueの数だけソケットを追加する
-        active_paths = 1
+        #cyclesはアルファ分があるので1を追加
+        if bpy.context.scene.render.engine == "CYCLES":
+            active_paths = 2
+        elif bpy.context.scene.render.engine == "BLENDER_EEVEE":
+            active_paths = 1
+            
         for key,value_list in pathdata_dict.items():
             if value_list[1] == True:
                 active_paths = active_paths + value_list[0]
         
         #ソケットの数を追加
         #ソケットの名称は読み取り専用のため断念
+        #もし変更できるならばitemsで取得したkeyを活用
         for i in range(active_paths):
             bpy.ops.node.output_file_add_socket()
             
