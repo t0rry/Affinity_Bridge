@@ -31,7 +31,32 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
             output_node.use_custom_color = True
             output_node.color = (0.6,0.3,0.5)
             #アウトプットノードの設定（ファイル設定）
-            output_node.format.file_format = "OPEN_EXR_MULTILAYER"        
+            output_node.format.file_format = "OPEN_EXR_MULTILAYER"    
+            
+            return scene.node_tree.nodes['export_openexr_AB']
+
+    def add_input_node(self):
+        #重複確認
+        try:
+            scene = bpy.context.scene
+            scene.node_tree.nodes['input_openexr_AB']
+        except KeyError:
+            pass
+        else:
+            #ノード削除
+            node = scene.node_tree.nodes['input_openexr_AB']
+            scene.node_tree.nodes.remove(node)
+        finally:
+            bpy.ops.node.add_node(use_transform=True, type="CompositorNodeRLayers")
+            input_node = bpy.context.scene.node_tree.nodes.active
+            #アウトプットノードの設定(ID、ビジュアル)
+            input_node.name = "input_openexr_AB"
+            input_node.label = "Input_OpenEXR(MultiLayer)"
+            input_node.use_custom_color = True
+            input_node.color = (0.6,0.3,0.5)
+            #アウトプットノードの設定（ファイル設定）   
+            
+            return scene.node_tree.nodes['input_openexr_AB']
     
     def get_render_pass_dict(self):
         view_layer = bpy.context.view_layer
@@ -106,13 +131,20 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
             
         return active_paths
     
-    def conecting_nodes(self,pathdata_dict):
-        pass 
-    
+    def conecting_nodes(self,pathdata_dict,outputnode,inputnode):
+        scene = bpy.context.scene
+        node_tree = scene.node_tree
+        
+        exportnode = outputnode
+        renderlayer = inputnode
+        node_tree.links.new(exportnode.inputs[0],
+                            renderlayer.outputs[0])
+        
+        
     def execute(self,context):
         #アウトプットノードを追加・設定        
-        self.add_output_node()
-        
+        outputnode = self.add_output_node()
+        inputnode = self.add_input_node()
         #ビューレイヤーから出力パス情報を取得
         pathdata_dict  = self.get_render_pass_dict()
         print(pathdata_dict)
@@ -121,7 +153,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         self.setting_export_node(pathdata_dict)
         
         #ノードを接続する
-        self.conecting_nodes(pathdata_dict)
+        self.conecting_nodes(pathdata_dict,outputnode,inputnode)
         return{'FINISHED'}
 
 def convert_fileformat(fileformat):
