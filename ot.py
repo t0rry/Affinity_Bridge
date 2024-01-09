@@ -140,6 +140,34 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         node_tree.links.new(exportnode.inputs[0],
                             renderlayer.outputs[0])
         
+    def new_get_render_pass_dict(self,outputnode,inputnode):
+        scene = bpy.context.scene
+        node_tree = scene.node_tree
+        
+        exportnode = outputnode
+        renderlayer = inputnode
+        
+        output_sockets = len(renderlayer.outputs)
+        output_sockets_name = []
+        output_sockets_enable = []
+        output_sockets_dict = {}
+        
+        #ノードのソケットを全部取得（非表示含め）
+        for i in range(output_sockets):
+            names = renderlayer.outputs[i].name
+            output_sockets_name.append(names)
+            
+            enables = renderlayer.outputs[i].enabled
+            output_sockets_enable.append(enables)
+        output_sockets_dict = dict(zip(output_sockets_name,output_sockets_enable))
+        
+        #ノードの全ソケットから表示されているものだけ抽出
+        for name,enable in list(output_sockets_dict.items()):
+            if enable == False:
+                output_sockets_dict.pop(name)
+                
+        return output_sockets_dict
+                
         
     def execute(self,context):
         #アウトプットノードを追加・設定        
@@ -154,6 +182,9 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         
         #ノードを接続する
         self.conecting_nodes(pathdata_dict,outputnode,inputnode)
+        
+        #テスト
+        self.connect_node(outputnode,inputnode)
         return{'FINISHED'}
 
 def convert_fileformat(fileformat):
