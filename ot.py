@@ -112,33 +112,20 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         return pathes_dict
     
     def setting_export_node(self,pathdata_dict):
-        #bool判定,Trueの数だけソケットを追加する
-        #cyclesはアルファ分があるので1を追加
-        if bpy.context.scene.render.engine == "CYCLES":
-            active_paths = 2
-        elif bpy.context.scene.render.engine == "BLENDER_EEVEE":
-            active_paths = 1
-            
-        for key,value_list in pathdata_dict.items():
-            if value_list[1] == True:
-                active_paths = active_paths + value_list[0]
-        
-        #ソケットの数を追加
-        #ソケットの名称は読み取り専用のため断念
-        #もし変更できるならばitemsで取得したkeyを活用
-        for i in range(active_paths):
+
+        for i in range(len(pathdata_dict)):
             bpy.ops.node.output_file_add_socket()
+            print("ソケット追加")
             
-        return active_paths
-    
     def conecting_nodes(self,pathdata_dict,outputnode,inputnode):
         scene = bpy.context.scene
         node_tree = scene.node_tree
         
         exportnode = outputnode
         renderlayer = inputnode
-        node_tree.links.new(exportnode.inputs[0],
-                            renderlayer.outputs[0])
+        for i in range(len(pathdata_dict)):
+            node_tree.links.new(exportnode.inputs[i],
+                                renderlayer.outputs[i])
         
     def new_get_render_pass_dict(self,outputnode,inputnode):
         scene = bpy.context.scene
@@ -167,14 +154,14 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
                 output_sockets_dict.pop(name)
                 
         return output_sockets_dict
-                
-        
+                    
     def execute(self,context):
-        #アウトプットノードを追加・設定        
+        #アウトプットノードを追加・設定  
+        inputnode = self.add_input_node()      
         outputnode = self.add_output_node()
-        inputnode = self.add_input_node()
+        
         #ビューレイヤーから出力パス情報を取得
-        pathdata_dict  = self.get_render_pass_dict()
+        pathdata_dict  = self.new_get_render_pass_dict(outputnode,inputnode)
         print(pathdata_dict)
         
         #パス情報をノードに適用
@@ -183,8 +170,6 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         #ノードを接続する
         self.conecting_nodes(pathdata_dict,outputnode,inputnode)
         
-        #テスト
-        self.connect_node(outputnode,inputnode)
         return{'FINISHED'}
 
 def convert_fileformat(fileformat):
