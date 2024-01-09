@@ -59,8 +59,6 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
             col = layout.column(align=True)
             col.label(text= '有効な画像を開いてください',icon = 'ERROR')
             
-
-
 def make_ui_alltype(self,context):
         layout = self.layout
         box = layout.box()
