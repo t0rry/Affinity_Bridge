@@ -58,64 +58,10 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
             
             return scene.node_tree.nodes['input_openexr_AB']
     
-    def get_render_pass_dict(self):
-        view_layer = bpy.context.view_layer
-        scene = bpy.context.scene 
-        #辞書データの初期化
-        pathes_dict = {}
-        #辞書データ構造設計
-        #dict
-        #     --key1:
-        #     ------[value1(ソケット数),[value2(有効判定)]]
-        #
-        
-        #全体共通パス
-        common_pathes = {"z":[1],"mist":[1],"position":[1],"normal":[1]}
-        pathes_dict.update(common_pathes)
-        
-        #cycles
-        cycles_pathes = {"vector":[1],"uv":[1],
-                        "diffuse_direct":[1],"diffuse_indirect":[1],"diffuse_color":[1],
-                        "glossy_direct":[1],"glossy_indirect":[1],"glossy_color":[1],
-                        "transmission_direct":[1],"transmission_indirect":[1],"transmission_color":[1]}
-        #eevee
-        eevee_pathes = {"diffuse_direct":[1],"diffuse_color":[1],
-                        "glossy_direct":[1],"glossy_color":[1],
-                        "emit":[1],"environment":[1],"shadow":[1],"ambient_occlusion":[1]}
-        #リスト、辞書データの初期化
-        bool_dict = {}
-        if scene.render.engine == "CYCLES":
-            #cycles要素を全体共通パスに合成
-            pathes_dict.update(cycles_pathes)
-            
-            #bool判定取得
-            for pathname,value_list in pathes_dict.items():
-                bool_get = eval(f"bpy.context.view_layer.use_pass_{pathname}")
-                #辞書データにboolを格納
-                value_list.append(bool_get)       
-        else:
-            pass
-                #EEVEE
-        if scene.render.engine == "BLENDER_EEVEE":
-            #EEVEE要素を全体共通パスに合成
-            pathes_dict.update(eevee_pathes)
-            
-            #bool判定取得
-            for pathname,value_list in pathes_dict.items():
-                bool_get = eval(f"bpy.context.view_layer.use_pass_{pathname}")
-                #辞書データにboolを格納
-                value_list.append(bool_get)                         
-            #ボリュームライトだけ例外処理すること（後回し）
-        else:
-            pass
-        
-        return pathes_dict
-    
     def setting_export_node(self,pathdata_dict):
 
-        for i in range(len(pathdata_dict)):
+        for i in range(len(pathdata_dict)-1):
             bpy.ops.node.output_file_add_socket()
-            print("ソケット追加")
             
     def conecting_nodes(self,pathdata_dict,outputnode,inputnode):
         scene = bpy.context.scene
@@ -162,7 +108,6 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         
         #ビューレイヤーから出力パス情報を取得
         pathdata_dict  = self.new_get_render_pass_dict(outputnode,inputnode)
-        print(pathdata_dict)
         
         #パス情報をノードに適用
         self.setting_export_node(pathdata_dict)
