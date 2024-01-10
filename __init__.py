@@ -93,7 +93,8 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
 
 classes = [
     AffinityBridgeProp,
-    ot.AFFINITYBRIDGE_OT_SetOpenEXR,
+    ot.AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer,
+    ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected,
     ot.AFFINITYBRIDGE_OT_Photo,
     ot.AFFINITYBRIDGE_OT_Reload,
     ui.AFFINITYBRIDGE_PT_Panel,

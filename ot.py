@@ -1,15 +1,68 @@
+from typing import Set
 import bpy
 import subprocess
 import os
+from bpy.types import Context
 
+class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
+    """
+    OpenExr(MultiLayer)で出力する設定を自動化
+    """
+    
+    bl_idname = "affinity_bridge.setopenexr_selectednode"
+    bl_label = "選択したノードのすべてのソケットに自動接続するOpenEXR出力のエクスポートノードを追加 "    
+    
+    def add_output_node(self,overlap):
+        #重複確認
+        if overlap == True:
+            try:
+                scene = bpy.context.scene
+                scene.node_tree.nodes['export_openexr_AB']
+            except KeyError:
+                pass
+            else:
+                #ノード削除
+                node = scene.node_tree.nodes['export_openexr_AB']
+                scene.node_tree.nodes.remove(node)
+            finally:
+                bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
+                output_node = bpy.context.scene.node_tree.nodes.active
+                #アウトプットノードの設定(ID、ビジュアル)
+                output_node.name = "export_openexr_AB"
+                output_node.label = "Export_OpenEXR(MultiLayer)"
+                output_node.use_custom_color = True
+                output_node.color = (0.6,0.3,0.5)
+                #アウトプットノードの設定（ファイル設定）
+                output_node.format.file_format = "OPEN_EXR_MULTILAYER"    
 
-class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
+                add_node = scene.node_tree.nodes['export_openexr_AB']   
+        else:
+                bpy.ops.node.add_node(use_transform=True, type="CompositorNodeOutputFile")
+                output_node = bpy.context.scene.node_tree.nodes.active
+                #アウトプットノードの設定(ID、ビジュアル)
+                output_node.name = "export_openexr_selected_AB"
+                output_node.label = "Export_OpenEXR(MultiLayer)"
+                output_node.use_custom_color = True
+                output_node.color = (0.6,0.3,0.5)
+                #アウトプットノードの設定（ファイル設定）
+                output_node.format.file_format = "OPEN_EXR_MULTILAYER"               
+
+                add_node = bpy.context.scene.node_tree.nodes.active
+                
+        return  add_node
+    
+    
+    def execute(self,context):
+        pass.
+        return {'FINISHED'}
+
+class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
     """
     OpenExr(MultiLayer)で出力する設定を自動化
     """
     
     bl_idname = "affinity_bridge.setopenexr"
-    bl_label = "set open exr"
+    bl_label = "RenderLayerに自動接続するOpenEXR出力のエクスポートノードを追加"
     
     def add_output_node(self):
         #重複確認
@@ -97,10 +150,12 @@ class AFFINITYBRIDGE_OT_SetOpenEXR(bpy.types.Operator):
         
         exportnode = outputnode
         renderlayer = inputnode
+        
         for i in range(len(pathdata_dict)):
             node_tree.links.new(exportnode.inputs[i],
                                 renderlayer.outputs[i])
-    
+        #ソケットの名称は変更できない(ReadOnlyのため)
+        
     def node_location(self,outputnode,inputnode):
         exportnode = outputnode
         renderlayer = inputnode
