@@ -51,9 +51,51 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
                 
         return  add_node
     
-    
+    def setting_export_node(self,input_node):
+        input_node_1 = input_node
+        socket_counts = len(input_node_1.outputs)
+        
+        for num in range(socket_counts - 1):
+            bpy.ops.node.output_file_add_socket()
+            
+        return socket_counts
+
+    def conecting_nodes(self,count,outputnode,inputnode):
+        scene = bpy.context.scene
+        node_tree = scene.node_tree
+        socket_count = count
+        exportnode = outputnode
+        selected_node = inputnode
+        
+        print(socket_count)
+        for i in range(socket_count):
+            node_tree.links.new(exportnode.inputs[i],
+                                selected_node.outputs[i])
+        #ソケットの名称は変更できない(ReadOnlyのため)
+
+    def node_location(self,outputnode,inputnode):
+            exportnode = outputnode
+            selectnode = inputnode
+            
+            x= selectnode.location.x
+            exportnode.location.x = x + 300
+            
+            y= selectnode.location.y
+            exportnode.location.y = y - 20        
+        
     def execute(self,context):
-        pass.
+        
+        #インプットノードの取得
+        input_node = bpy.context.scene.node_tree.nodes.active
+        #アウトプットノードの設定        
+        output_node = self.add_output_node(overlap = False)
+        socket_count = self.setting_export_node(input_node)
+        
+        #ノードの接続
+        self.conecting_nodes(socket_count,output_node,input_node)
+
+        #ノードの位置調整
+        self.node_location(output_node,input_node)
         return {'FINISHED'}
 
 class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
@@ -136,7 +178,11 @@ class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
         for name,enable in list(output_sockets_dict.items()):
             if enable == False:
                 output_sockets_dict.pop(name)
-                
+        
+        #dictについて
+        #{ソケットの名前：True or False}
+        #RenderLayerについてはoutputsを参照すると非表示になっているソケットについても参照してしまう
+        #そのためoutputsをすべて参照したのちに有効なノードのみを出力する辞書データを作成する
         return output_sockets_dict
                     
     def setting_export_node(self,pathdata_dict):
@@ -170,6 +216,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
         
         #ビューレイヤーから出力パス情報を取得
         pathdata_dict  = self.get_render_pass_dict(outputnode,inputnode)
+        
         
         #パス情報をノードに適用
         self.setting_export_node(pathdata_dict)
