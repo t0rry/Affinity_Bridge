@@ -90,8 +90,23 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         description = 'to changing parameter when saved image'        
     )
 
+class AFFINITYBRIDGE_MT_SetOpenExrSelected(bpy.types.Menu):
+    
+    bl_idname = "AFFINITYBRIDGE_MT_SetOpenExrSelected"
+    bl_label = "AffnityBridge"
+    bl_description = "選択したノードをOpenEXR(MultiLayer)で一括出力できるように設定します"
+    
+    def draw(self,context):
+        layout = self.layout
+        layout.operator(ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected.bl_idname,icon='NODETREE')         
+
+def menu_register_func(cls, context):
+    cls.layout.separator()
+    cls.layout.menu(AFFINITYBRIDGE_MT_SetOpenExrSelected.bl_idname, icon = 'NODETREE')
+        
 classes = [
     AffinityBridgeProp,
+    AFFINITYBRIDGE_MT_SetOpenExrSelected,
     ot.AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer,
     ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected,
     ot.AFFINITYBRIDGE_OT_Photo,
@@ -105,8 +120,10 @@ def register():
     for c in classes:
         bpy.utils.register_class(c)
     bpy.types.Scene.affinitybridge = bpy.props.PointerProperty(type = AffinityBridgeProp)
+    bpy.types.NODE_MT_context_menu.append(menu_register_func)
     
 def unregister():
+    bpy.types.NODE_MT_context_menu.remove(menu_register_func)
     for c in classes:
         bpy.utils.unregister_class(c)
     del bpy.types.Scene.affinitybridge

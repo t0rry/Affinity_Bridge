@@ -58,8 +58,7 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
         except:
             col = layout.column(align=True)
             col.label(text= '有効な画像を開いてください',icon = 'ERROR')
-            
-            
+                        
 class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
     bl_idname = "AFFINITY_BRIDGE_PT_RenderSettingPanel"
     bl_label = "Bridge AffinityPhoto RenderSettings"
@@ -206,5 +205,4 @@ class AFFINITYBRIDGE_PT_InformationPanel(bpy.types.Panel):
             box = layout.box()
             box.label(text= 'saved images path')
             box.label(text = context.scene.affinitybridge.path_str)
-            
             
