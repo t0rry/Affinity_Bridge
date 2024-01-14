@@ -88,18 +88,21 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
             exportnode.location.y = y - 20        
         
     def execute(self,context):
-        
         #インプットノードの取得
         input_node = bpy.context.scene.node_tree.nodes.active
-        #アウトプットノードの設定        
-        output_node = self.add_output_node(overlap = False)
-        socket_count = self.setting_export_node(input_node)
-        
-        #ノードの接続
-        self.conecting_nodes(socket_count,output_node,input_node)
+        #対象ノードがレンダーレイヤーの場合、処理を行わない
+        if not input_node.type == "R_LAYERS":
+            #アウトプットノードの設定        
+            output_node = self.add_output_node(overlap = False)
+            socket_count = self.setting_export_node(input_node)
+            
+            #ノードの接続
+            self.conecting_nodes(socket_count,output_node,input_node)
 
-        #ノードの位置調整
-        self.node_location(output_node,input_node)
+            #ノードの位置調整
+            self.node_location(output_node,input_node)
+        else:
+            self.report({'ERROR'},'レンダーレイヤーには使用できません') 
         return {'FINISHED'}
 
 class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
