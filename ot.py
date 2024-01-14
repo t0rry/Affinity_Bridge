@@ -13,6 +13,7 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
     bl_label = "選択したノードのすべてのソケットに自動接続するOpenEXR出力のエクスポートノードを追加 "    
     
     def add_output_node(self,overlap):
+        #アウトプットノードを追加するメソッド
         #重複確認
         if overlap == True:
             try:
@@ -52,6 +53,7 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
         return  add_node
     
     def setting_export_node(self,input_node):
+        #インプットノードの性質に合わせてアウトプットノードを設定するメソッド
         input_node_1 = input_node
         socket_counts = len(input_node_1.outputs)
         
@@ -61,6 +63,7 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
         return socket_counts
 
     def conecting_nodes(self,count,outputnode,inputnode):
+        #インプットノードとアウトプットを接続するメソッド
         scene = bpy.context.scene
         node_tree = scene.node_tree
         socket_count = count
@@ -74,6 +77,7 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
         #ソケットの名称は変更できない(ReadOnlyのため)
 
     def node_location(self,outputnode,inputnode):
+        #ノードの位置調整
             exportnode = outputnode
             selectnode = inputnode
             
@@ -305,13 +309,12 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                     self.report({'INFO'},'フォルダを作成しました'+ save_dir) 
                 
             else:
+                #ファイルパスが存在するときの処理
                 is_exist_filepath = True
-                print('開発用:パスが存在しています')
                 save_dir = file_path
                     
             #レンダリング設定を一時保存する
             old_rebder_setting = self.save_render_setting()
-            print('開発用：現在使用しているレンダリング設定をバックアップしました')
             
             #ファイルパスが存在しないデータのみ使用
             if is_exist_filepath == False:
@@ -320,15 +323,12 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                 afy_brg = context.scene.affinitybridge
                 context.scene.render.image_settings.file_format = afy_brg.file_format
                 context.scene.render.image_settings.color_mode = afy_brg.color_mode
-                print('開発用：ファイルパスが存在しないためレンダリング設定を上書しています')
                 
             else:
-                print('開発用：ファイルパスが存在するためレンダリング設定を上書していません')
+                pass
             
             #convert exr
             file_format = self.convert_fileformat(context.scene.render.image_settings.file_format)
-
-            print('レンダリング設定を任意の内容に変更しました')
             
             #save
             if is_exist_filepath == False:
@@ -341,9 +341,10 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                     file_name_change = file_name
                     saved_path = save_dir + "\\" + file_name_change +'.' + file_format.lower()
                     
+                    #画像を保存
                     bpy.data.images[file_name].save_render(saved_path,scene = bpy.context.scene)
-                    print('開発用：画像を保存しましたファイルパスは以下の通りです')
-                    #load
+
+                    #保存した画像のリロード
                     bpy.ops.image.open(filepath = saved_path)
                     print('開発用:画像を再ロードしました')
                     
