@@ -59,18 +59,6 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
             col = layout.column(align=True)
             col.label(text= '有効な画像を開いてください',icon = 'ERROR')
             
-def make_ui_alltype(self,context):
-        layout = self.layout
-        box = layout.box()
-        box.label(text= 'All Type RenderPass',icon = 'KEYTYPE_KEYFRAME_VEC')
-            
-        col = layout.column(align=True)            
-        view_layer = context.view_layer
-        col.prop(view_layer,"use_pass_combined")
-        col.prop(view_layer, "use_pass_z")
-        col.prop(view_layer, "use_pass_mist")
-        col.prop(view_layer, "use_pass_position")
-        col.prop(view_layer, "use_pass_normal")   
             
 class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
     bl_idname = "AFFINITY_BRIDGE_PT_RenderSettingPanel"
@@ -78,6 +66,20 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
     bl_space_type = "IMAGE_EDITOR"
     bl_region_type = "UI"
     bl_category = "AffinityBridge"
+
+    def make_ui_alltype(self):
+            context = bpy.context
+            layout = self.layout
+            box = layout.box()
+            box.label(text= 'All Type RenderPass',icon = 'KEYTYPE_KEYFRAME_VEC')
+                
+            col = layout.column(align=True)            
+            view_layer = context.view_layer
+            col.prop(view_layer,"use_pass_combined")
+            col.prop(view_layer, "use_pass_z")
+            col.prop(view_layer, "use_pass_mist")
+            col.prop(view_layer, "use_pass_position")
+            col.prop(view_layer, "use_pass_normal")   
     
     def draw(self, context):
             layout = self.layout
@@ -92,7 +94,7 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
                 view_layer = context.view_layer                
                 cycles_view_layer = view_layer.cycles
                 
-                make_ui_alltype(self,context)
+                self.make_ui_alltype()
                 
                 box = layout.box()
                 box.label(text= 'Cycles',icon = 'KEYTYPE_EXTREME_VEC')
@@ -143,7 +145,7 @@ class AFFINITYBRIDGE_PT_RenderSettingPanel(bpy.types.Panel):
                 
             elif context.scene.render.engine == 'BLENDER_EEVEE':
                 
-                make_ui_alltype(self,context)
+                self.make_ui_alltype()
                 
                 box = layout.box()
                 box.label(text= 'EEVEE',icon = 'KEYTYPE_EXTREME_VEC')
