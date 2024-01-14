@@ -346,7 +346,6 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
 
                     #保存した画像のリロード
                     bpy.ops.image.open(filepath = saved_path)
-                    print('開発用:画像を再ロードしました')
                     
             else:
                 saved_path = file_path

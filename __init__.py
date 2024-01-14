@@ -98,11 +98,16 @@ class AFFINITYBRIDGE_MT_SetOpenExrSelected(bpy.types.Menu):
     
     def draw(self,context):
         layout = self.layout
-        layout.operator(ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected.bl_idname,icon='NODETREE')         
+        ui_type = context.area.ui_type
+        if ui_type == "CompositorNodeTree":
+            layout.operator(ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected.bl_idname,icon='NODETREE')         
 
 def menu_register_func(cls, context):
-    cls.layout.separator()
-    cls.layout.menu(AFFINITYBRIDGE_MT_SetOpenExrSelected.bl_idname, icon = 'NODETREE')
+    
+    ui_type = context.area.ui_type
+    if ui_type == "CompositorNodeTree":
+        cls.layout.separator()
+        cls.layout.menu(AFFINITYBRIDGE_MT_SetOpenExrSelected.bl_idname, icon = 'NODETREE')
         
 classes = [
     AffinityBridgeProp,
