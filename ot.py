@@ -227,37 +227,6 @@ class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
         #ノードの位置情報変更
         self.node_location(outputnode,inputnode)
         return{'FINISHED'}
-
-def convert_fileformat(fileformat):
-    
-    file_format = 'EXR' if fileformat == 'OPEN_EXR' else fileformat
-    file_format = 'EXR' if fileformat == 'OPEN_EXR_MULTILAYER' else fileformat
-    
-    return file_format
-
-def save_render_setting():
-    img_stg =bpy.context.scene.render.image_settings
-    old_ff = img_stg.file_format
-    old_cc = img_stg.color_mode
-    
-    old_setting = [old_ff,old_cc]
-    
-    return old_setting
-
-def undo_render_setting(old_setting):
-    img_stg =bpy.context.scene.render.image_settings    
-    img_stg.file_format = old_setting[0]
-    img_stg.color_mode = old_setting[1]
-    
-def open_affinity_photo(file_path):
-    #AffinityPhotoのパス
-    users_path = os.path.expanduser('~')
-    ap2_path = '\AppData\Local\Microsoft\WindowsApps\AffinityPhoto2.exe'
-    affinity_photo2_path = users_path + ap2_path    
-    
-    subprocess.Popen([ affinity_photo2_path, file_path ],shell = True)
-    
-    return affinity_photo2_path
     
 class AFFINITYBRIDGE_OT_Reload(bpy.types.Operator):
     """
@@ -277,6 +246,37 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
     """    
     bl_idname = "affinity_bridge.open_affinity_photo"
     bl_label = "atart-up to affinity photo"
+
+    def convert_fileformat(self,fileformat):
+        
+        file_format = 'EXR' if fileformat == 'OPEN_EXR' else fileformat
+        file_format = 'EXR' if fileformat == 'OPEN_EXR_MULTILAYER' else fileformat
+        
+        return file_format
+
+    def save_render_setting(self,):
+        img_stg =bpy.context.scene.render.image_settings
+        old_ff = img_stg.file_format
+        old_cc = img_stg.color_mode
+        
+        old_setting = [old_ff,old_cc]
+        
+        return old_setting
+
+    def undo_render_setting(self,old_setting):
+        img_stg =bpy.context.scene.render.image_settings    
+        img_stg.file_format = old_setting[0]
+        img_stg.color_mode = old_setting[1]
+        
+    def open_affinity_photo(self,file_path):
+        #AffinityPhotoのパス
+        users_path = os.path.expanduser('~')
+        ap2_path = '\AppData\Local\Microsoft\WindowsApps\AffinityPhoto2.exe'
+        affinity_photo2_path = users_path + ap2_path    
+        
+        subprocess.Popen([ affinity_photo2_path, file_path ],shell = True)
+        
+        return affinity_photo2_path
 
     def execute(self,context):
         #Can only be used when there is only one IMAGE_EDITOR on the screen
@@ -310,7 +310,7 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                 save_dir = file_path
                     
             #レンダリング設定を一時保存する
-            old_rebder_setting = save_render_setting()
+            old_rebder_setting = self.save_render_setting()
             print('開発用：現在使用しているレンダリング設定をバックアップしました')
             
             #ファイルパスが存在しないデータのみ使用
@@ -326,7 +326,7 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
                 print('開発用：ファイルパスが存在するためレンダリング設定を上書していません')
             
             #convert exr
-            file_format = convert_fileformat(context.scene.render.image_settings.file_format)
+            file_format = self.convert_fileformat(context.scene.render.image_settings.file_format)
 
             print('レンダリング設定を任意の内容に変更しました')
             
@@ -350,13 +350,13 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
             else:
                 saved_path = file_path
                 
-            open_affinity_photo(saved_path)
+            self.open_affinity_photo(saved_path)
         
             #UIにファイルパスを表示する
             context.scene.affinitybridge.path_str = saved_path
             
             #レンダリング設定を元に戻す
-            undo_render_setting(old_rebder_setting)
+            self.undo_render_setting(old_rebder_setting)
             
             self.report({'INFO'},'Success!:'+ saved_path) 
     

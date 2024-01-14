@@ -89,7 +89,6 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         name = 'old color_mode',
         description = 'to changing parameter when saved image'        
     )
-    
 
 classes = [
     AffinityBridgeProp,
