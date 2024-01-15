@@ -77,6 +77,7 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         description = 'use to input orignal name',
         default = False
     )
+
     
     #maybe dont use old_ff,old_cm
     
@@ -90,6 +91,7 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         description = 'to changing parameter when saved image'        
     )
 
+    
 class AFFINITYBRIDGE_MT_SetOpenExrSelected(bpy.types.Menu):
     
     bl_idname = "AFFINITYBRIDGE_MT_SetOpenExrSelected"
@@ -102,6 +104,22 @@ class AFFINITYBRIDGE_MT_SetOpenExrSelected(bpy.types.Menu):
         if ui_type == "CompositorNodeTree":
             layout.operator(ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected.bl_idname,icon='NODETREE')         
 
+class AFFINITYBRIDGE_Preferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+        
+    option_image_editing_exe:StringProperty(
+        name = "画像編集ソフトを指定",
+        subtype = "FILE_PATH",
+        default = ""
+    )
+    
+    def draw(self,context):
+        layout = self.layout
+        
+        box = layout.box()
+        box.prop(self, 'option_image_editing_exe')
+        
 def menu_register_func(cls, context):
     
     ui_type = context.area.ui_type
@@ -111,6 +129,7 @@ def menu_register_func(cls, context):
         
 classes = [
     AffinityBridgeProp,
+    AFFINITYBRIDGE_Preferences,
     AFFINITYBRIDGE_MT_SetOpenExrSelected,
     ot.AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer,
     ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected,
