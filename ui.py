@@ -11,6 +11,7 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        prefs = context.preferences.addons['Affinity_Bridge'].preferences
 
         try:
             if context.space_data.image.filepath_from_user(image_user=None) == '':
@@ -23,25 +24,33 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
                 
                 layout.separator()
                 
-                box = layout.box()
-                box.label(text= 'Image Rename',icon = 'FILE_TEXT')
+
                 
                 col = layout.column(align=True)
                 col.prop(scene.affinitybridge, 'is_change_name',text = 'used orignal name')
-                col.prop(scene.affinitybridge, 'file_name', text='File Name')
+                if scene.affinitybridge.is_change_name == True:
+                    col.prop(scene.affinitybridge, 'file_name', text='File Name')
                 
                 box = layout.box()
                 box.label(text= 'AffinityBridge',icon = 'SEQUENCE_COLOR_04')
                 
-                layout.separator()
+                #Affinity PhotoV2と連携するか外部ソフトと連携するか選択する
+                is_affinity = context.scene.affinitybridge.is_used_affinityphoto
+                
                 col = layout.column(align=True)
-                col.scale_x = 3
-                col.scale_y = 3
-                col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
-                col.separator(factor = 1)
-                
-                
-                col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT')  
+                col.prop(scene.affinitybridge, 'is_used_affinityphoto',text = 'Used AffinityBridge')
+                col = layout.column(align=True)
+                if is_affinity == True:
+                    layout.separator()                    
+                    col.scale_x = 3
+                    col.scale_y = 3
+                    col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
+                    col.separator(factor = 1)                    
+                    col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT') 
+                    
+                else:
+                    col.prop(prefs,'option_image_editing_exe',text="出力ソフトウェア")
+
 
             else:
                 box = layout.box()

@@ -78,7 +78,11 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         default = False
     )
 
-    
+    is_used_affinityphoto:BoolProperty(
+        name = 'AffinityPhotoを利用する',
+        description = 'AffinityPhotoV2を利用するときは有効に',
+        default = True
+    )
     #maybe dont use old_ff,old_cm
     
     old_ff:StringProperty(
