@@ -7,66 +7,78 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
     bl_space_type = "IMAGE_EDITOR"
     bl_region_type = "UI"
     bl_category = "AffinityBridge"
-    
-    def draw(self, context):
+
+    def render_setting(self):
         layout = self.layout
+        context = bpy.context
+        scene = context.scene
+        
+        box = layout.box()
+        box.label(text= 'Render Setting',icon = 'RENDER_STILL')
+        
+        col = layout.column(align=True)
+        col.prop(scene.affinitybridge, "file_format", text="Format") 
+        col.prop(scene.affinitybridge, "color_mode", text="Color Mode")   
+        
+        layout.separator()                
+    
+    def affinity_bridge(self,af_bool):
+        layout = self.layout
+        context = bpy.context
         scene = context.scene
         prefs = context.preferences.addons['Affinity_Bridge'].preferences
 
+        box = layout.box()
+        box.label(text= 'AffinityBridge',icon = 'SEQUENCE_COLOR_04')
+        
+        if af_bool == True:
+            button_name = 'Bridge AffinityPhoto2'
+        else:
+            button_name = 'Bridge Custom Software'
+        
+        col = layout.column(align=True)
+        col.prop(scene.affinitybridge, 'is_used_affinityphoto',text = 'Used AffinityBridge')
+        col = layout.column(align=True)                
+
+        layout.separator()
+        col = layout.column(align=True)
+        col.scale_x = 3
+        col.scale_y = 3
+        col.operator('affinity_bridge.open_affinity_photo',text= button_name ,icon = 'EXPORT')
+        col.separator(factor = 1)
+        col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT') 
+        if af_bool == False:
+            col = layout.column(align=True)
+            col.prop(prefs,'option_image_editing_exe',text="出力ソフトウェア")          
+
+    def used_original_name(self):
+        layout = self.layout
+        context = bpy.context
+        scene = context.scene
+        
+        col = layout.column(align=True)
+        col.prop(scene.affinitybridge, 'is_change_name',text = 'used orignal name')
+        if scene.affinitybridge.is_change_name == True:
+            col.prop(scene.affinitybridge, 'file_name', text='File Name')  
+        
+    def draw(self, context):
+        layout = self.layout
+
         try:
+            #ファイルパスが存在しない場合を判定
             if context.space_data.image.filepath_from_user(image_user=None) == '':
-                box = layout.box()
-                box.label(text= 'Render Setting',icon = 'RENDER_STILL')
-                
-                col = layout.column(align=True)
-                col.prop(scene.affinitybridge, "file_format", text="Format") 
-                col.prop(scene.affinitybridge, "color_mode", text="Color Mode")   
-                
-                layout.separator()
-                
-                col = layout.column(align=True)
-                col.prop(scene.affinitybridge, 'is_change_name',text = 'used orignal name')
-                if scene.affinitybridge.is_change_name == True:
-                    col.prop(scene.affinitybridge, 'file_name', text='File Name')
-                
-                box = layout.box()
-                box.label(text= 'AffinityBridge',icon = 'SEQUENCE_COLOR_04')
-                
+                #ファイルパスが存在しない場合
+                self.render_setting()
+                self.used_original_name()
                 #Affinity PhotoV2と連携するか外部ソフトと連携するか選択する
+                #affinity bridgeのボタン
                 is_affinity = context.scene.affinitybridge.is_used_affinityphoto
-                
-                col = layout.column(align=True)
-                col.prop(scene.affinitybridge, 'is_used_affinityphoto',text = 'Used AffinityBridge')
-                col = layout.column(align=True)
-                if is_affinity == True:
-                    layout.separator()                    
-                    col.scale_x = 3
-                    col.scale_y = 3
-                    col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
-                    col.separator(factor = 1)                    
-                    col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT') 
-                    
-                else:
-                    layout.separator()                    
-                    col.scale_x = 3
-                    col.scale_y = 3
-                    col.operator('affinity_bridge.open_affinity_photo',text='Bridge Custom Software',icon = 'EXPORT')
-                    col.separator(factor = 1)                    
-                    col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT') 
-                    col = layout.column(align=True)
-                    col.prop(prefs,'option_image_editing_exe',text="出力ソフトウェア")
+                self.affinity_bridge(is_affinity)
             else:
-                box = layout.box()
-                box.label(text= 'AffinityBridge',icon = 'SEQUENCE_COLOR_04')
-                
-                layout.separator()
-                col = layout.column(align=True)
-                col.scale_x = 3
-                col.scale_y = 3
-                col.operator('affinity_bridge.open_affinity_photo',text='Bridge AffinityPhoto2',icon = 'EXPORT')
-                col.separator(factor = 1)
-                col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT')  
-            
+                #ファイルパスが存在する場合                
+                is_affinity = context.scene.affinitybridge.is_used_affinityphoto
+                self.affinity_bridge(is_affinity)         
+                                            
         except:
             col = layout.column(align=True)
             col.label(text= '有効な画像を開いてください',icon = 'ERROR')

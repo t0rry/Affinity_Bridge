@@ -275,15 +275,20 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
         img_stg.file_format = old_setting[0]
         img_stg.color_mode = old_setting[1]
         
-    def open_affinity_photo(self,file_path):
+    def open_affinity_photo(self,file_path,is_ap,other_path):
         #AffinityPhotoのパス
-        users_path = os.path.expanduser('~')
-        ap2_path = '\AppData\Local\Microsoft\WindowsApps\AffinityPhoto2.exe'
-        affinity_photo2_path = users_path + ap2_path    
+        if is_ap == True:
+            users_path = os.path.expanduser('~')
+            ap2_path = '\AppData\Local\Microsoft\WindowsApps\AffinityPhoto2.exe'
+            affinity_photo2_path = users_path + ap2_path    
+            
+            subprocess.Popen([ affinity_photo2_path, file_path ],shell = True)
+            
+        else:
+            subprocess.Popen([ other_path, file_path ],shell = True)
+            
         
-        subprocess.Popen([ affinity_photo2_path, file_path ],shell = True)
-        
-        return affinity_photo2_path
+        return 
 
     def execute(self,context):
         #Can only be used when there is only one IMAGE_EDITOR on the screen
@@ -353,7 +358,12 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
             else:
                 saved_path = file_path
                 
-            self.open_affinity_photo(saved_path)
+            #画像編集ソフトにブリッジ
+            is_ap = context.scene.affinitybridge.is_used_affinityphoto
+            
+            prefs = context.preferences.addons['Affinity_Bridge'].preferences
+            other_file_path = prefs.option_image_editing_exe
+            self.open_affinity_photo(saved_path,is_ap,other_file_path)
         
             #UIにファイルパスを表示する
             context.scene.affinitybridge.path_str = saved_path
