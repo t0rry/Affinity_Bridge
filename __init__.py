@@ -80,7 +80,7 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
 
     is_used_affinityphoto:BoolProperty(
         name = 'AffinityPhotoを利用する',
-        description = 'AffinityPhotoV2を利用するときは有効に',
+        description = 'AffinityBridgeするときにAffinityPhotoV2が起動されます',
         default = True
     )
     #maybe dont use old_ff,old_cm
@@ -128,7 +128,8 @@ class AFFINITYBRIDGE_Preferences(bpy.types.AddonPreferences):
         
         box = layout.box()
         box.prop(self, 'option_image_editing_exe')
-        
+        box.prop(self,'is_display_filepath',text = "画像エディタ上でexeファイルを編集できるようにする")
+        box.label(icon = 'ERROR',text = 'イメージエディタ上にファイルパスが表示されるため無効にすることを推奨します。')
 def menu_register_func(cls, context):
     
     ui_type = context.area.ui_type

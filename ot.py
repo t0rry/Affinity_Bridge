@@ -101,6 +101,7 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
 
             #ノードの位置調整
             self.node_location(output_node,input_node)
+            self.report({'INFO'},'Success!:SetOpenEXR(MultiLayer)') 
         else:
             self.report({'ERROR'},'レンダーレイヤーには使用できません') 
         return {'FINISHED'}
@@ -213,7 +214,7 @@ class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
         exportnode = outputnode
         renderlayer = inputnode
         
-        x= exportnode.location.x
+        x = exportnode.location.x
         renderlayer.location.x = x-300
         
     def execute(self,context):
@@ -224,7 +225,6 @@ class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
         #ビューレイヤーから出力パス情報を取得
         pathdata_dict  = self.get_render_pass_dict(outputnode,inputnode)
         
-        
         #パス情報をノードに適用
         self.setting_export_node(pathdata_dict)
         
@@ -233,11 +233,14 @@ class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
         
         #ノードの位置情報変更
         self.node_location(outputnode,inputnode)
+        
+        self.report({'INFO'},'Success!:SetOpenEXR(MultiLayer)') 
         return{'FINISHED'}
     
 class AFFINITYBRIDGE_OT_Reload(bpy.types.Operator):
     """
-    image reloaded image
+    画像をリロードします。
+    （画像編集ソフト側で画像を上書き保存してから実行してください）
     """    
     bl_idname = "affinity_bridge.reload_affinity_photo"
     bl_label = "atart-up to affinity photo"
@@ -249,7 +252,8 @@ class AFFINITYBRIDGE_OT_Reload(bpy.types.Operator):
     
 class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
     """
-    image loaded start-up AffinityPhoto2 
+    画像をAffinityPhotoV2で開きます。
+    ※Used AffinityBridgeが無効な時は指定された画像編集ソフトが起動します
     """    
     bl_idname = "affinity_bridge.open_affinity_photo"
     bl_label = "atart-up to affinity photo"
@@ -286,8 +290,7 @@ class AFFINITYBRIDGE_OT_Photo(bpy.types.Operator):
             
         else:
             subprocess.Popen([ other_path, file_path ],shell = True)
-            
-        
+                    
         return 
 
     def execute(self,context):

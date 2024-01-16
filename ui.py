@@ -39,18 +39,13 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
         
         col = layout.column(align=True)
         col.prop(scene.affinitybridge, 'is_used_affinityphoto',text = 'Used AffinityBridge')
-        col = layout.column(align=True)                
-
-        layout.separator()
-        col = layout.column(align=True)
-        col.scale_x = 3
-        col.scale_y = 3
+        col.separator(factor = 3)
         col.operator('affinity_bridge.open_affinity_photo',text= button_name ,icon = 'EXPORT')
-        col.separator(factor = 1)
         col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT') 
         if af_bool == False:
             col = layout.column(align=True)
-            col.prop(prefs,'is_display_filepath',text = "ファイルパス表示")   
+            col.prop(prefs,'is_display_filepath',text = "出力ソフト設定") 
+            col.label(icon = 'ERROR',text = '有効時ファイルパスが表示されるため注意')  
             if is_display_filepath == True:
                 col.prop(prefs,'option_image_editing_exe',text="出力ソフトウェア") 
 
@@ -230,6 +225,6 @@ class AFFINITYBRIDGE_PT_InformationPanel(bpy.types.Panel):
     def draw(self, context):
             layout = self.layout
             box = layout.box()
-            box.label(text= 'saved images path')
+            box.label(icon = 'FILE_FOLDER',text= '画像の保存先')
             box.label(text = context.scene.affinitybridge.path_str)
             
