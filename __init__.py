@@ -77,7 +77,12 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         description = 'use to input orignal name',
         default = False
     )
-    
+
+    is_used_affinityphoto:BoolProperty(
+        name = 'AffinityPhotoを利用する',
+        description = 'AffinityBridgeするときにAffinityPhotoV2が起動されます',
+        default = True
+    )
     #maybe dont use old_ff,old_cm
     
     old_ff:StringProperty(
@@ -90,9 +95,55 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         description = 'to changing parameter when saved image'        
     )
     
+class AFFINITYBRIDGE_MT_CompositPanel(bpy.types.Menu):
+    
+    bl_idname = "AFFINITYBRIDGE_MT_SetOpenExrSelected"
+    bl_label = "AffnityBridge"
+    bl_description = "コンポジット上で機能するパネル"
+    
+    def draw(self,context):
+        layout = self.layout
+        ui_type = context.area.ui_type
+        if ui_type == "CompositorNodeTree":
+            layout.operator(ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected.bl_idname,icon='NODETREE')  
+            layout.operator(ot.AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer.bl_idname,icon='NODETREE')               
 
+class AFFINITYBRIDGE_Preferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+        
+    option_image_editing_exe:StringProperty(
+        name = "画像編集ソフトを指定",
+        subtype = "FILE_PATH",
+        default = ""
+    )
+    
+    is_display_filepath:BoolProperty(
+        name = "UI上にexeファイルのファイルパス指定を表示する",
+        default = False
+    )
+    
+    def draw(self,context):
+        layout = self.layout
+        
+        box = layout.box()
+        box.prop(self, 'option_image_editing_exe')
+        box.prop(self,'is_display_filepath',text = "画像エディタ上でexeファイルを編集できるようにする")
+        box.label(icon = 'ERROR',text = 'イメージエディタ上にファイルパスが表示されるため無効にすることを推奨します。')
+def menu_register_func(cls, context):
+    
+    ui_type = context.area.ui_type
+    if ui_type == "CompositorNodeTree":
+        cls.layout.separator()
+        cls.layout.menu(AFFINITYBRIDGE_MT_CompositPanel.bl_idname, icon = 'NODETREE')
+
+        
 classes = [
     AffinityBridgeProp,
+    AFFINITYBRIDGE_Preferences,
+    AFFINITYBRIDGE_MT_CompositPanel,
+    ot.AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer,
+    ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected,
     ot.AFFINITYBRIDGE_OT_Photo,
     ot.AFFINITYBRIDGE_OT_Reload,
     ui.AFFINITYBRIDGE_PT_Panel,
@@ -104,8 +155,10 @@ def register():
     for c in classes:
         bpy.utils.register_class(c)
     bpy.types.Scene.affinitybridge = bpy.props.PointerProperty(type = AffinityBridgeProp)
+    bpy.types.NODE_MT_context_menu.append(menu_register_func)
     
 def unregister():
+    bpy.types.NODE_MT_context_menu.remove(menu_register_func)
     for c in classes:
         bpy.utils.unregister_class(c)
     del bpy.types.Scene.affinitybridge
