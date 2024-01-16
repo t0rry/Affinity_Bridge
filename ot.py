@@ -6,11 +6,11 @@ from bpy.types import Context
 
 class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
     """
-    OpenExr(MultiLayer)で出力する設定を自動化
+    選択したノード（グループノードを対応）の出力ソケットに接続するOpenEXR(MultiLayer)を出力用ノードを自動設定します。
     """
     
     bl_idname = "affinity_bridge.setopenexr_selectednode"
-    bl_label = "選択したノードのすべてのソケットに自動接続するOpenEXR出力のエクスポートノードを追加 "    
+    bl_label = "選択ノードのOpenEXR出力 "    
     
     def add_output_node(self,overlap):
         #アウトプットノードを追加するメソッド
@@ -107,11 +107,11 @@ class AFFINTYBRIDGE_OT_SetOpenEXR_Selected(bpy.types.Operator):
 
 class AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer(bpy.types.Operator):
     """
-    OpenExr(MultiLayer)で出力する設定を自動化
+    シーン用のRenderLayerに設定されたアクティブソケットに接続されるOpenEXR(MultiLayer)出力用ノードを自動設定します。
     """
     
     bl_idname = "affinity_bridge.setopenexr"
-    bl_label = "RenderLayerに自動接続するOpenEXR出力のエクスポートノードを追加"
+    bl_label = "RenderLayer用のOpenEXR出力"
     
     def add_output_node(self):
         #重複確認

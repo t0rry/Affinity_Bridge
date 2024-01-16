@@ -94,19 +94,19 @@ class AffinityBridgeProp(bpy.types.PropertyGroup):
         name = 'old color_mode',
         description = 'to changing parameter when saved image'        
     )
-
     
-class AFFINITYBRIDGE_MT_SetOpenExrSelected(bpy.types.Menu):
+class AFFINITYBRIDGE_MT_CompositPanel(bpy.types.Menu):
     
     bl_idname = "AFFINITYBRIDGE_MT_SetOpenExrSelected"
     bl_label = "AffnityBridge"
-    bl_description = "選択したノードをOpenEXR(MultiLayer)で一括出力できるように設定します"
+    bl_description = "コンポジット上で機能するパネル"
     
     def draw(self,context):
         layout = self.layout
         ui_type = context.area.ui_type
         if ui_type == "CompositorNodeTree":
-            layout.operator(ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected.bl_idname,icon='NODETREE')         
+            layout.operator(ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected.bl_idname,icon='NODETREE')  
+            layout.operator(ot.AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer.bl_idname,icon='NODETREE')               
 
 class AFFINITYBRIDGE_Preferences(bpy.types.AddonPreferences):
     bl_idname = __name__
@@ -116,6 +116,11 @@ class AFFINITYBRIDGE_Preferences(bpy.types.AddonPreferences):
         name = "画像編集ソフトを指定",
         subtype = "FILE_PATH",
         default = ""
+    )
+    
+    is_display_filepath:BoolProperty(
+        name = "UI上にexeファイルのファイルパス指定を表示する",
+        default = False
     )
     
     def draw(self,context):
@@ -129,12 +134,13 @@ def menu_register_func(cls, context):
     ui_type = context.area.ui_type
     if ui_type == "CompositorNodeTree":
         cls.layout.separator()
-        cls.layout.menu(AFFINITYBRIDGE_MT_SetOpenExrSelected.bl_idname, icon = 'NODETREE')
+        cls.layout.menu(AFFINITYBRIDGE_MT_CompositPanel.bl_idname, icon = 'NODETREE')
+
         
 classes = [
     AffinityBridgeProp,
     AFFINITYBRIDGE_Preferences,
-    AFFINITYBRIDGE_MT_SetOpenExrSelected,
+    AFFINITYBRIDGE_MT_CompositPanel,
     ot.AFFINITYBRIDGE_OT_SetOpenEXR_RenderLayer,
     ot.AFFINTYBRIDGE_OT_SetOpenEXR_Selected,
     ot.AFFINITYBRIDGE_OT_Photo,

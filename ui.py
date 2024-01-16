@@ -27,7 +27,8 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
         context = bpy.context
         scene = context.scene
         prefs = context.preferences.addons['Affinity_Bridge'].preferences
-
+        is_display_filepath  = prefs.is_display_filepath
+        
         box = layout.box()
         box.label(text= 'AffinityBridge',icon = 'SEQUENCE_COLOR_04')
         
@@ -49,7 +50,9 @@ class AFFINITYBRIDGE_PT_Panel(bpy.types.Panel):
         col.operator('affinity_bridge.reload_affinity_photo',text='Reload Image',icon = 'IMPORT') 
         if af_bool == False:
             col = layout.column(align=True)
-            col.prop(prefs,'option_image_editing_exe',text="出力ソフトウェア")          
+            col.prop(prefs,'is_display_filepath',text = "ファイルパス表示")   
+            if is_display_filepath == True:
+                col.prop(prefs,'option_image_editing_exe',text="出力ソフトウェア") 
 
     def used_original_name(self):
         layout = self.layout
