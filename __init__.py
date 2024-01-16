@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Hattori_Kaoru( t0rry_ )",
     "description" : "BlenderからAffinityPhoto2を起動します",
     "blender" : (4, 0, 0),
-    "version" : (0, 5, 1),
+    "version" : (0, 6, 0),
     "location" : "Image Editor >> Property Panel",
     "warning" : "This vertions experiment",
     "support" : "COMMUNITY",
@@ -136,7 +136,6 @@ def menu_register_func(cls, context):
     if ui_type == "CompositorNodeTree":
         cls.layout.separator()
         cls.layout.menu(AFFINITYBRIDGE_MT_CompositPanel.bl_idname, icon = 'NODETREE')
-
         
 classes = [
     AffinityBridgeProp,

@@ -1,4 +1,4 @@
-# Affinity Bridge Addon
+# Affinity Bridge Addon v0.6.0
 ![image](https://user-images.githubusercontent.com/78343605/201816867-742ffd77-b2d7-4f97-888c-c3b78264012a.png)
 ## Note (English only)
 **(English)**
