@@ -1,77 +1,29 @@
-# Affinity Bridge Addon v0.6.0
-![image](https://user-images.githubusercontent.com/78343605/201816867-742ffd77-b2d7-4f97-888c-c3b78264012a.png)
-## Note (English only)
-**(English)**
 
-So many things are written in Japanese.
-(For example, processing completion messages, debug messages, and this readme)
-I don't know if this project can help people.
-If there is a lot of feedback and support, we may support English.
+<h1>AffnityBridge Addon V0.6.0 </h1>
 
-**(日本語)**
+![export](https://github.com/t0rry/Affinity_Bridge/assets/78343605/2ee80440-f5a9-401a-8057-0c9a0b8b58a7)
+<h2>どういうアドオン？</h2>
+BlenderとAffinityPhotoV2を強力に連携するために作成されました。</br>
+現在はAffinityPhotoV2以外のソフトとの連携ができるようにアップデートを行っています。
 
-## どういうアドオン？
-Blenderの画像エディタ・UVエディタで開いている画像をAffinityPhoto2で開きます。
+<h2>機能</h2>
+<h3>RenderLayer、ViewerNodeを直接エディタソフトで起動</h3>
+Blender標準の「外部エディタで編集」はRenderLayer、ViewerNodeに対応していないため、対応。</br>
+また、強力なエクスポーターによりPNG／JPEG／OpenEXR／OpenEXR(MultiLayer)に対応。</br>
 
-テクスチャの編集をはじめ、レンダリングした画像のレタッチを使用することを想定して作成されています。
+exeファイルを指定することでAffinityPhotov2以外のエディタでも同様の機能が実行できます。</br>
 
-※Blenderの標準機能でも「画像エディタ・UVエディタ上で開いている画像を外部エディタ上で開く」機能はあります。
+<h3>読込み済みの画像を外部エディタソフトで起動</h3>
+当然、Blenderに読み込まれた画像を外部エディタソフトで起動することができます。</br>
 
-## 標準機能との違い
-***「Render Result」、「Viewer Node」についてもAffinityPhoto2で開くことができます。***
+<h3>画像のリロード</h3>
+エディタ側で保存した画像をリロードします。</br>
+外部エディタソフトを用いたテクスチャペイントにとても便利です。</br>
 
-標準機能ではこれをサポートしていません。Blenderの仕様で上記二つのデータについてパスを保持していないためです。
+<h3>選択ノードをOpenEXR(MultiLayer)で出力してくれるアウトプットノードを自動生成</h3>
+コンポジットノードで選択されたノードをOpenEXR（MultiLayer）で出力するアウトプットノードを自動生成します。</br>
+個人向けのカスタマイズされたグループノードで要素を出力するときなどに便利です。
 
-この仕様を回避するために保存がされていない（パスが存在しない）Blenderが保持する画像データについてはblendファイル直下に「AffinityBridge」フォルダを生成し、
-あなたが指定した画像フォーマット・カラーフォーマットをもとに保存され、AffinityPhoto2に共有されます。
-
-## 動作環境
-**開発者の環境に依存しています**
-このプロジェクトは私の個人プロジェクトだからです。
-
-多くの需要があれば多くの環境に提供できるようにしたいと考えています。
-
-* Windows
-* Blender2.8以降
-## 使い方
-### インストール
-
-1. zipファイルの状態でアドオンを読み込みます。
-![image](https://user-images.githubusercontent.com/78343605/201817616-4927a7c1-0fe7-40a4-b172-b8ad4cd4485a.png)
-
-
-1. 画像エディタのプロパティパネルにAffinityBridgeが追加されているはずです。
-
-![image](https://user-images.githubusercontent.com/78343605/201817774-24833aa3-a84c-4a1e-aa01-93ee27ba6204.png)
-
-### すでに読み込んだ画像をAffinityBridgeする
-
-画像エディタ上で対象の画像ファイルを開いた状態でBridge AffinityPhotoを実行します。
-
-![image](https://user-images.githubusercontent.com/78343605/201818375-6f2d6952-2cda-4e04-a93a-9555cb4a553c.png)
-
-RenderResult、ViewerNode、保存されていない画像をAffinityBridgeする
-***
-
-設定項目
-* データフォーマット
-* カラーモード
-* ファイル名（有効時のみ利用されます）
-
-を設定したあとにBridge_AffinityPhoto2を実行します。
-
-![image](https://user-images.githubusercontent.com/78343605/201818886-e997702c-4826-449f-b8b4-487f5443331d.png)
-
-自動的にファイルが保存されると同時にBlenderにロードされます。
-
-![image](https://user-images.githubusercontent.com/78343605/201819390-56773089-e64b-4baf-8578-5240aa2e8b94.png)
-
-Bridge AffinityPhoto Informationで出力された画像のパスを確認できます。
-
-![image](https://user-images.githubusercontent.com/78343605/201819520-bb2884fd-a65e-4043-8dd9-4c3be0d1e7cd.png)
-
-### AffinityPhoto2で作業した画像をBlenderに反映させる
-
-再読み込みを実行
-
-![image](https://user-images.githubusercontent.com/78343605/201819991-4bc6c4ef-d5ca-4ad5-80d2-9f891b6d8e2d.png)
+<h3>シーンのレンダーレイヤをOpenEXR(MultiLayer)で出力してくれるアウトプットノードを自動生成</h3>
+シーンのレンダーレイヤーの有効なパスを出力するアウトプットノードを自動生成します。</br>
+レンダーレイヤーごと生成するため、ノード構成が複雑になってしまったシーンで純粋なパスだけを出力したいときに便利です。
