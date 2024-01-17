@@ -1,8 +1,3 @@
-# Affinity Bridge Addon v0.6.0
-![image](https://user-images.githubusercontent.com/78343605/201816867-742ffd77-b2d7-4f97-888c-c3b78264012a.png)
-## Note (English only)
-**(English)**
-
 <h1>AffnityBridge Addon V0.6.0 </h1>
 
 ![export](https://github.com/t0rry/Affinity_Bridge/assets/78343605/2ee80440-f5a9-401a-8057-0c9a0b8b58a7)
